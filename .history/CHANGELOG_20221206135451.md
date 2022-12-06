@@ -1,0 +1,16 @@
+# Changelog
+
+## 0.1.0
+
+- Add tests
+- Add changelog
+- Add coveralls coverage
+- Add linter
+- Add additional Firebase Storage initialization config
+- Bug fixes & improvements
+- Add support for custom buckets (rather than just default) in Firebase Storage.
+
+## upcoming version
+
+- Add delete options
+- Add upload options

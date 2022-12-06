@@ -1,0 +1,56 @@
+{
+  "name": "strapi-firebase-and-gcloud-storage-connector",
+  "version": "0.1.0",
+  "description": "Firebase and Google Cloud Storage provider for Strapi Media Library",
+  "main": "./lib",
+  "scripts": {
+    "test": "jest --setupFiles dotenv/config",
+    "lint": "eslint .  --ext .js",
+    "coverage": "jest --collect-coverage --setupFiles dotenv/config"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "strapi": {
+    "isProvider": true
+  },
+  "maintainers": [
+    "raheemolalekanusman84@gmail.com"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "author": "Olalekan Raheem Usman (SOG-web)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector/issues"
+  },
+  "homepage": "https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector#readme",
+  "keywords": [
+    "strapi",
+    "firebase",
+    "storage",
+    "provider",
+    "upload",
+    "media",
+    "library",
+    "media library",
+    "Google Cloud Storage"
+  ],
+  "dependencies": {
+    "@google-cloud/storage": "^6.7.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.1.0"
+  }
+}

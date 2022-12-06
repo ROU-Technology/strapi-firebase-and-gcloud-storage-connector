@@ -1,0 +1,33 @@
+{
+  "name": "strapi-firebase-and-gcloud-storage-connector",
+  "version": "0.1.0",
+  "description": "Firebase and Google Cloud Storage provider for Strapi Media Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "author": "Olalekan Raheem Usman (SOG-web)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector/issues"
+  },
+  "homepage": "https://github.com/ROU-Technology/strapi-firebase-and-gcloud-storage-connector#readme",
+  "keywords": [
+    "strapi",
+    "firebase",
+    "storage",
+    "provider",
+    "upload",
+    "media",
+    "library",
+    "media library",
+    "Google Cloud Storage"
+  ]
+}
