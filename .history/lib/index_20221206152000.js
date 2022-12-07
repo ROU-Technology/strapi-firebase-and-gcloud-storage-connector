@@ -8,29 +8,28 @@ const path = require('path');
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
 
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
+
     return {
       upload(file) {
         return new Promise((resolve, reject) => {
           const filename = `${file.path ? `${file.path}/` : ''}${file.name}`;
+          const path = `../upload/${file.hash}${file.ext}`;
 
           const options = {
             destination: filename,
           };
 
           fs.writeFile(
-            // path.join(`./public/uploads`, `${file.hash}${file.ext}`),
-            file.name,
+            path.join('../upload', `${file.hash}${file.ext}`),
             file.buffer,
             (err) => {
               if (err) {
@@ -42,13 +41,10 @@ module.exports = {
                 .makePublic()
                 .then((res) => {
                   bucket
-                    .upload(`./${file.name}`, options)
+                    .upload(path, options)
                     .then((value) => {
                       const url = value[0].publicUrl();
                       file.url = url;
-                      fs.unlink(file.name, (err) => {
-                        print('Unlink file error', err);
-                      });
                       print('UPLOAD: Success!', url);
                       resolve();
                     })

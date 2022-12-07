@@ -1,23 +1,20 @@
 'use strict';
 const { Storage } = require('@google-cloud/storage');
-const fs = require('fs');
-const path = require('path');
 
 // TODO: Add projectId to env
 // TODO: // Get this from Google Cloud -> Credentials -> Service Accounts
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
+
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
 
     return {
       upload(file) {
@@ -26,43 +23,31 @@ module.exports = {
 
           const options = {
             destination: filename,
+            ...config.uploadOption,
           };
 
-          fs.writeFile(
-            // path.join(`./public/uploads`, `${file.hash}${file.ext}`),
-            file.name,
-            file.buffer,
-            (err) => {
-              if (err) {
-                print('Writing file error');
-                return reject(err);
-              }
+          print(file);
 
+          bucket
+            .makePublic()
+            .then((res) => {
               bucket
-                .makePublic()
-                .then((res) => {
-                  bucket
-                    .upload(`./${file.name}`, options)
-                    .then((value) => {
-                      const url = value[0].publicUrl();
-                      file.url = url;
-                      fs.unlink(file.name, (err) => {
-                        print('Unlink file error', err);
-                      });
-                      print('UPLOAD: Success!', url);
-                      resolve();
-                    })
-                    .catch((err) => {
-                      print('UPLOAD: Uploading Error!', err);
-                      return reject(err);
-                    });
+                .upload(file.path, options)
+                .then((value) => {
+                  const url = value[0].publicUrl();
+                  file.url = url;
+                  print('UPLOAD: Success!', url);
+                  resolve();
                 })
                 .catch((err) => {
-                  print('UPLOAD: Storage Error!', err);
+                  print('UPLOAD: Uploading Error!', err);
                   return reject(err);
                 });
-            }
-          );
+            })
+            .catch((err) => {
+              print('UPLOAD: Storage Error!', err);
+              return reject(err);
+            });
         });
       },
       delete(file) {

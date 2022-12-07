@@ -8,16 +8,15 @@ const path = require('path');
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
+
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
 
     return {
       upload(file) {
@@ -38,29 +37,29 @@ module.exports = {
                 return reject(err);
               }
 
+              // bucket
+              //   .makePublic()
+              //   .then((res) => {
               bucket
-                .makePublic()
-                .then((res) => {
-                  bucket
-                    .upload(`./${file.name}`, options)
-                    .then((value) => {
-                      const url = value[0].publicUrl();
-                      file.url = url;
-                      fs.unlink(file.name, (err) => {
-                        print('Unlink file error', err);
-                      });
-                      print('UPLOAD: Success!', url);
-                      resolve();
-                    })
-                    .catch((err) => {
-                      print('UPLOAD: Uploading Error!', err);
-                      return reject(err);
-                    });
+                .upload(`./${file.name}`, options)
+                .then((value) => {
+                  const url = value[0].publicUrl();
+                  file.url = url;
+                  fs.unlink(file.name, (err) => {
+                    print('Unlink file error', err);
+                  });
+                  print('UPLOAD: Success!', url);
+                  resolve();
                 })
                 .catch((err) => {
-                  print('UPLOAD: Storage Error!', err);
+                  print('UPLOAD: Uploading Error!', err);
                   return reject(err);
                 });
+              // })
+              // .catch((err) => {
+              //   print('UPLOAD: Storage Error!', err);
+              //   return reject(err);
+              // });
             }
           );
         });

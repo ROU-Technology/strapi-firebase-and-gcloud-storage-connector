@@ -11,7 +11,6 @@ module.exports = {
     const print = (...args) => {
       if (config.debug) console.log(...args);
     };
-
     print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,

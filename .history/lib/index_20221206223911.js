@@ -8,16 +8,15 @@ const path = require('path');
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
+
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
 
     return {
       upload(file) {
@@ -42,11 +41,11 @@ module.exports = {
                 .makePublic()
                 .then((res) => {
                   bucket
-                    .upload(`./${file.name}`, options)
+                    .upload(file.name, options)
                     .then((value) => {
                       const url = value[0].publicUrl();
                       file.url = url;
-                      fs.unlink(file.name, (err) => {
+                      fs.unlink(`./upload/${file.hash}${file.ext}`, (err) => {
                         print('Unlink file error', err);
                       });
                       print('UPLOAD: Success!', url);

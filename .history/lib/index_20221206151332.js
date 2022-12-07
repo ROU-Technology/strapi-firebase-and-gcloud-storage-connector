@@ -8,61 +8,56 @@ const path = require('path');
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
 
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
+
     return {
       upload(file) {
         return new Promise((resolve, reject) => {
           const filename = `${file.path ? `${file.path}/` : ''}${file.name}`;
 
-          const options = {
-            destination: filename,
-          };
-
           fs.writeFile(
-            // path.join(`./public/uploads`, `${file.hash}${file.ext}`),
-            file.name,
+            path.join('../upload', `${file.hash}${file.ext}`),
             file.buffer,
             (err) => {
               if (err) {
-                print('Writing file error');
                 return reject(err);
               }
 
-              bucket
-                .makePublic()
-                .then((res) => {
-                  bucket
-                    .upload(`./${file.name}`, options)
-                    .then((value) => {
-                      const url = value[0].publicUrl();
-                      file.url = url;
-                      fs.unlink(file.name, (err) => {
-                        print('Unlink file error', err);
-                      });
-                      print('UPLOAD: Success!', url);
-                      resolve();
-                    })
-                    .catch((err) => {
-                      print('UPLOAD: Uploading Error!', err);
-                      return reject(err);
-                    });
-                })
-                .catch((err) => {
-                  print('UPLOAD: Storage Error!', err);
-                  return reject(err);
-                });
+              file.url = `/${UPLOADS_FOLDER_NAME}/${file.hash}${file.ext}`;
+
+              resolve();
             }
           );
+
+          bucket
+            .makePublic()
+            .then((res) => {
+              bucket
+
+                .upload(file.buffer, options)
+                .then((value) => {
+                  const url = value[0].publicUrl();
+                  file.url = url;
+                  print('UPLOAD: Success!', url);
+                  resolve();
+                })
+                .catch((err) => {
+                  print('UPLOAD: Uploading Error!', err);
+                  return reject(err);
+                });
+            })
+            .catch((err) => {
+              print('UPLOAD: Storage Error!', err);
+              return reject(err);
+            });
         });
       },
       delete(file) {

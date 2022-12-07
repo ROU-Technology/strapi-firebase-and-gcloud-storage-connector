@@ -8,16 +8,16 @@ const path = require('path');
 
 module.exports = {
   init(config) {
-    const print = (...args) => {
-      if (config.debug) console.log(...args);
-    };
-
-    print(config.serviceAccount);
+    console.log(config.serviceAccount);
     const storage = new Storage({
       projectId: config.projectId,
       keyFilename: config.serviceAccount,
     });
     const bucket = storage.bucket(config.bucketUrl);
+
+    const print = (...args) => {
+      if (config.debug) console.log(...args);
+    };
 
     return {
       upload(file) {
